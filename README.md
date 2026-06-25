@@ -1,133 +1,320 @@
-[Google Finance Scraper](https://apify.com/scraped_org/google-finance-scraper?fpr=data)
+[Google Finance Scraper](https://apify.com/kaix/google-finance-scraper?fpr=data)
 
-Effortlessly gather stocks, ETFs, Mutual Funds data from **Google Finance**.
+# Google Finance Scraper
 
-Our Actor is designed for speed, reliability, and scalability, handling multiple stocks in a single run with ease.
+Scrape comprehensive financial data from Google Finance. Returns stock quotes, company info, financial statements, price charts, news, and related stocks. Supports stocks, ETFs, indices, crypto, currencies, and futures across 20+ global exchanges.
 
-Perfect for businesses, developers, and analysts looking to gain insights and make data-driven decisions.
+## Why use this scraper?
 
-Apify proxies are supported by this actor. See explanation. See those links for more information: [Link1](https://docs.apify.com/sdk/python/docs/concepts/proxy-management), [Link2](https://docs.apify.com/platform/actors/development/actor-definition/input-schema/specification/v1#object)
+- Full stock data: quote, 52-week range, market cap, P/E, dividend yield, volume, beta, sector
+- Company profile: description, CEO, employees, HQ, founded date, website, Wikipedia
+- Financial statements: income statement, balance sheet, cash flow (quarterly + annual, multiple years)
+- Price charts: intraday minute-by-minute or daily OHLCV with configurable time range
+- News with snippets, thumbnails, and related stock quotes embedded in articles
+- Related stocks with full quote data
+- Crypto pairs (BTC-USD, ETH-USD), currencies (EUR-USD), futures (GCW00:COMEX)
+- 18 market discovery pages (gainers, losers, trending, crypto, futures, sectors, etc.)
 
-Key features include:
+## Use cases
 
-- Stocks Details
-- Market Trends
-- Stock Search
+- Build financial databases with fundamentals across global markets
+- Track stock prices, after-hours data, and earnings dates
+- Analyze income statements, balance sheets, and cash flow trends
+- Feed price charts into technical analysis pipelines
+- Monitor financial news with related stock context
+- Discover trending stocks, top gainers/losers, and market movers
 
-## Actions
+## How to use
 
-| Action Name | Action Code | Description |
-| --- | --- | --- |
-| Stocks Details | `"stocks_details"` | Get Stocks Details |
-| Market Trends | `"market_trends"` | Get Market Trends |
-| Search Stocks | `"search_stocks"` | Search Stocks |
+### Look up a single stock
 
-### Stocks Details
+```
+{
+  "stocks": ["GOOGL:NASDAQ"]
+}
+```
 
-Get Stocks Details from Google Finance.
+### Look up multiple stocks
 
-#### Inputs
+```
+{
+  "stocks": [
+    "GOOGL:NASDAQ",
+    "AAPL:NASDAQ",
+    "TSLA:NASDAQ",
+    "AMZN:NASDAQ"
+  ]
+}
+```
 
-| Input Name | Input Code | Description | Type | Constraints | Required | Default |
-| --- | --- | --- | --- | --- | --- | --- |
-| Action | `action` | Perform extraction of stocks details from Google Finance | String | Pass `"stocks_details"` to perform this action | Yes | `"stocks_details"` |
-| Country | `country` | 2 letters country code (ISO 3166-2) | String | Valid country code | No | `"us"` |
-| Language | `language` | 2 letters language code (ISO 639-1) | String | Valid language Code | No | `"en"` |
-| Stocks | `stocks` | List of stocks. Fill stocks as in Google Finance URL (e.g. `["AAPL:NASDAQ"]`) | Array of Strings | Valid stocks. Non valid IDs will be skipped | Yes |  |
-| Extract Stock News | `extract_stock_news` | Whether to extract news related to the stocks or not | Boolean |  | No | `true` |
-| Extract Quarterly Financial | `extract_quarterly_financial` | Whether to extract quarterly financial of the stocks or not | Boolean |  | No | `true` |
-| Extract Yearly Financial | `extract_yearly_financial` | Whether to extract yearly financial of the stocks or not | Boolean |  | No | `true` |
-| Extract Current Stock Prices | `extract_stock_prices_in_day` | Whether to extract stocks prices of the current day (or last market day) or not | Boolean |  | No | `true` |
-| Extract Stock Prices of Last 30 Days | `extract_stock_prices_last_30_days` | Whether to extract stocks prices of last 30 days or not | Boolean |  | No | `true` |
+### Crypto
 
-### Market Trends
+```
+{
+  "stocks": ["BTC-USD", "ETH-USD", "SOL-USD"]
+}
+```
 
-Get Market Trends from Google Finance.
+### Currency pairs
 
-#### Inputs
+```
+{
+  "stocks": ["EUR-USD", "GBP-USD", "USD-JPY"]
+}
+```
 
-| Input Name | Input Code | Description | Type | Constraints | Required | Default |
-| --- | --- | --- | --- | --- | --- | --- |
-| Action | `action` | Perform extraction of market trends from Google Finance | String | Pass `"market_trends"` to perform this action | Yes | `"stocks_details"` |
-| Country | `country` | 2 letters country code (ISO 3166-2) | String | Valid country code | No | `"us"` |
-| Language | `language` | 2 letters language code (ISO 639-1) | String | Valid language Code | No | `"en"` |
-| Market Trends | `market_trends_types` | List of Market Trends | Array of Strings | Valid market trends types: See **Market Trends List** | Yes | `["most-active"]` |
+### Futures / Commodities
 
-#### Market Trends List
+```
+{
+  "stocks": ["GCW00:COMEX", "CLW00:NYMEX", "SIW00:COMEX"]
+}
+```
 
-Market Trends and Their Code
+> **Note:** Use Google Finance ticker format, not Yahoo Finance. For example, use `GCW00:COMEX` for Gold, not `GC=F`.
 
-> Indexes: `"indexes"`
-> 
-> Indexes in Americas: `"indexes_americas"`
-> 
-> Indexes in Europe, Middle East, Africa: `"indexes_europe-middle-east-africa"`
-> 
-> indexes in Asia Pacific: `"indexes_asia-pacific"`
-> 
-> Most Active: `"most-active"`
-> 
-> Gainers: `"gainers"`
-> 
-> Losers: `"losers"`
-> 
-> Climate Leaders: `"climate-leaders"`
-> 
-> Cryptocurrencies: `"cryptocurrencies"`
-> 
-> Currencies: `"currencies"`
+### Global exchanges
 
-### Search Stocks
+```
+{
+  "stocks": [
+    "005930:KRX",
+    "7203:TYO",
+    "RELIANCE:NSE",
+    "VOW3:ETR",
+    "0700:HKG"
+  ]
+}
+```
 
-Search Stocks in Google Finance.
+### Discover stocks from market pages
 
-#### Inputs
+```
+{
+  "searchMarket": "gainers",
+  "maxSearchResults": 10
+}
+```
 
-| Input Name | Input Code | Description | Type | Constraints | Required | Default |
-| --- | --- | --- | --- | --- | --- | --- |
-| Action | `action` | Perform search of stocks from Google Finance | String | Pass `"search_stocks"` to perform this action | Yes | `"stocks_details"` |
-| Country | `country` | 2 letters country code (ISO 3166-2) | String | Valid country code | No | `"us"` |
-| Language | `language` | 2 letters language code (ISO 639-1) | String | Valid language Code | No | `"en"` |
-| Search Stocks | `search_stocks` | Search text (e.g. `"apple"`) | String |  | Yes |  |
+### Minimal output (quote only)
 
-## Proxy
+```
+{
+  "stocks": ["GOOGL:NASDAQ"],
+  "includeFinancials": false,
+  "includeChart": false,
+  "includeNews": false,
+  "includeRelated": false
+}
+```
 
-`proxy` object should be defined by the required proxy technique.
+### Full output with 1-year chart
 
-The following section will help to define the `proxy` object.
+```
+{
+  "stocks": ["GOOGL:NASDAQ"],
+  "includeFinancials": true,
+  "includeChart": true,
+  "includeNews": true,
+  "includeRelated": true,
+  "includeMarketIndices": true,
+  "includeMarketMovers": true,
+  "chartWindow": "1Y"
+}
+```
 
-### Data Center Proxies
+## Input
 
-| Field | Description | Type | Default |
+| Field | Type | Default | Description |
 | --- | --- | --- | --- |
-| `useApifyProxy` | Whether to use Apify Proxies. | Boolean | `true` |
-| `apifyProxyCountry` | Taking Data Center proxies of specific country. 2 letters country code (ISO 3166-2) If blank the proxies can be taken from anywhere. | String |  |
+| `stocks` | string[] |  | Stock identifiers or Google Finance URLs |
+| `searchMarket` | enum |  | Market page to discover stocks from (see below) |
+| `searchTerm` | string |  | Search keyword to discover trending stocks |
+| `maxSearchResults` | number | `20` | Max stocks from search/market page |
+| `includeFinancials` | boolean | `true` | Income statement, balance sheet, cash flow |
+| `includeChart` | boolean | `true` | OHLCV price chart data |
+| `includeNews` | boolean | `true` | News headlines, sources, snippets |
+| `includeRelated` | boolean | `true` | Related and similar stocks |
+| `includeMarketIndices` | boolean | `false` | Global market indices |
+| `includeMarketMovers` | boolean | `false` | Top gainers/losers/trending |
+| `chartWindow` | enum | `1M` | `1D`, `5D`, `1M`, `6M`, `YTD`, `1Y`, `5Y`, `MAX` |
 
-### Residential Proxies
+### Market pages
 
-| Field | Description | Type | Default |
-| --- | --- | --- | --- |
-| `useApifyProxy` | Whether to use Apify Proxies. | Boolean | `true` |
-| `apifyProxyGroups` | Specify `["RESIDENTIAL"]` to use residential proxy. | Array of String |  |
-| `apifyProxyCountry` | Taking residential proxies of specific country. 2 letters country code (ISO 3166-2) If blank the proxies can be taken from anywhere. | String |  |
+`indexes`, `gainers`, `losers`, `most-active`, `trending`, `climate-leaders`, `currencies`, `crypto`, `etfs`, `futures`, `commodities`, `bonds`, `sectors`, `americas`, `europe-middle-east-africa`, `asia-pacific`, `world`
 
-### Special Proxies
+### Supported exchanges
 
-| Field | Description | Type | Default |
-| --- | --- | --- | --- |
-| `useApifyProxy` | Whether to use Apify Proxies | Boolean | `true` |
-| `apifyProxyGroups` | Specify `["GOOGLE_SERP"]` to use special proxy. Other groups can be specified here - Search that in Apify for more information. | Array of String |  |
-| `apifyProxyCountry` | Taking residential proxies of specific country. 2 letters country code (ISO 3166-2) If blank the proxies can be taken from anywhere. | String |  |
+NASDAQ, NYSE, NYSEARCA, KRX, TYO, NSE, ETR, HKG, SHA, ASX, TSE, CVE, JSE, COMEX, NYMEX, and all major index providers (INDEXDJX, INDEXSP, INDEXNASDAQ, INDEXNIKKEI, INDEXHANGSENG, INDEXBOM, INDEXNSE, etc.)
 
-### Own Proxies
+## Output
 
-| Field | Description | Type | Default |
-| --- | --- | --- | --- |
-| `useApifyProxy` | Whether to use Apify Proxies. Pass `false` to use your own proxies. | Boolean | `true` |
-| `proxyUrls` | Specify your own proxies in an array of string with this format: `http://username:password@my-proxy.example.com:port` | Array of String | `[]` |
+One record per stock in the default dataset.
 
-### No Proxies
+### Stock output (GOOGL:NASDAQ — live data)
 
-| Field | Description | Type | Default |
-| --- | --- | --- | --- |
-| `useApifyProxy` | Whether to use Apify Proxies. Pass `false` to run without proxies. | Boolean | `true` |
+```
+{
+  "ticker": "GOOGL",
+  "exchange": "NASDAQ",
+  "exchangeName": "NASDAQ",
+  "name": "Alphabet Inc Class A",
+  "type": "stock",
+  "currency": "USD",
+  "country": "US",
+  "kgMid": "/m/07zln7n",
+  "price": 337.17,
+  "previousClose": 336.02,
+  "open": 337.65,
+  "high": 338.75,
+  "low": 336.24,
+  "change": 1.15,
+  "changePercent": 0.34,
+  "fiftyTwoWeekHigh": 349,
+  "fiftyTwoWeekLow": 146.1,
+  "marketCap": 4062214655676,
+  "peRatio": 31.18,
+  "dividendYield": 0.25,
+  "volume": 27972713,
+  "beta": 1.125,
+  "sharesOutstanding": 5822000000,
+  "sector": "Interactive media",
+  "timezone": "America/New_York",
+  "afterHours": {
+    "price": 338,
+    "change": 0.94,
+    "changePercent": 0.28,
+    "lastUpdateTimestamp": 1776432600
+  },
+  "nextEarningsDate": { "year": 2026, "month": 3, "day": 9 },
+  "company": {
+    "description": "Alphabet Inc. is an American multinational technology conglomerate...",
+    "ceo": "Sundar Pichai",
+    "employees": 190820,
+    "founded": { "year": 2015, "month": 10, "day": 2 },
+    "hq": {
+      "city": "Mountain View",
+      "state": "California",
+      "country": "United States",
+      "countryCode": "US",
+      "address": "1600 Amphitheatre Parkway"
+    },
+    "website": "https://abc.xyz/",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Alphabet_Inc."
+  },
+  "financials": {
+    "periods": [
+      {
+        "periodType": "annual",
+        "fiscalEnd": { "year": 2025, "month": 12, "day": 31 },
+        "currency": "USD",
+        "revenue": 113829000000,
+        "netIncome": 34455000000,
+        "eps": 2.81,
+        "operatingMargin": 30.27,
+        "operatingIncome": 35934000000,
+        "totalAssets": 595281000000,
+        "totalLiabilities": 206038000000,
+        "totalEquity": 415265000000,
+        "cashAndShortTermInvestments": 77895000000,
+        "operatingCashFlow": 52402000000,
+        "capex": 32128000000,
+        "profitMargin": 34.35,
+        "returnOnAssets": 15.88
+      }
+    ]
+  },
+  "chart": {
+    "window": "1M",
+    "intervalSeconds": 86400,
+    "previousClose": 337.12,
+    "dataPoints": [
+      {
+        "timestamp": 1773738000,
+        "date": [2026, 3, 17, 16],
+        "price": 310.92,
+        "change": 0,
+        "changePercent": 0,
+        "volume": 21955171
+      }
+    ]
+  },
+  "news": [
+    {
+      "title": "Dbs Bank Increases Alphabet (NASDAQ:GOOGL) Price Target to $400.00",
+      "source": "MarketBeat",
+      "url": "https://www.marketbeat.com/...",
+      "timestamp": 1776436200,
+      "snippet": "Alphabet (NASDAQ:GOOGL) had its price target increased...",
+      "articleId": "12345678901234567890",
+      "thumbnailUrl": "https://encrypted-tbn0.gstatic.com/...",
+      "thumbnailWidth": 300,
+      "thumbnailHeight": 168,
+      "relatedTickers": [{ "ticker": "", "exchange": "", "kgMid": "/m/07zln7n" }]
+    }
+  ],
+  "relatedStocks": [
+    {
+      "ticker": "AMZN",
+      "exchange": "NASDAQ",
+      "name": "Amazon.com Inc",
+      "type": "stock",
+      "currency": "USD",
+      "price": 254.49,
+      "change": 5.99,
+      "changePercent": 2.41,
+      "previousClose": 248.5,
+      "kgMid": "/m/07zl90k"
+    }
+  ]
+}
+```
+
+### Crypto output (BTC-USD — live data)
+
+```
+{
+  "ticker": "BTC-USD",
+  "exchange": "",
+  "name": "Bitcoin (BTC / USD)",
+  "type": "crypto",
+  "currency": "USD",
+  "price": 77925.27,
+  "previousClose": 75164.04,
+  "change": 2761.23,
+  "changePercent": 3.67,
+  "baseCurrency": "BTC",
+  "quoteCurrency": "USD",
+  "baseName": "Bitcoin",
+  "quoteName": "United States Dollar",
+  "company": null,
+  "financials": null,
+  "chart": {
+    "window": "1M",
+    "dataPoints": "32 points"
+  },
+  "relatedStocks": [
+    { "ticker": "ETH-USD", "name": "Ether (ETH / USD)", "price": 2447.67 },
+    { "ticker": "LTC-USD", "name": "Litecoin (LTC / USD)", "price": 57.05 },
+    { "ticker": "DOGE-USD", "name": "Dogecoin (DOGE / USD)", "price": 0.098 }
+  ]
+}
+```
+
+### Output fields
+
+**Quote** (always included): `ticker`, `exchange`, `exchangeName`, `name`, `type`, `currency`, `country`, `kgMid`, `price`, `previousClose`, `open`, `high`, `low`, `change`, `changePercent`, `fiftyTwoWeekHigh`, `fiftyTwoWeekLow`, `marketCap`, `peRatio`, `dividendYield`, `volume`, `avgVolume`, `beta`, `sharesOutstanding`, `sector`, `isDelayed`, `lastUpdateTimestamp`, `timezone`, `utcOffset`, `brandColor`, `afterHours`, `marketHours`, `baseCurrency`, `quoteCurrency`, `baseName`, `quoteName`, `companyKgMid`, `nextEarningsDate`
+
+**Company** (stocks/ETFs only): `description`, `ceo`, `employees`, `founded`, `hq` (city, state, country, address), `website`, `wikipediaUrl`
+
+**Financials** (when `includeFinancials` is true): quarterly + annual periods with `revenue`, `netIncome`, `eps`, `epsDiluted`, `operatingIncome`, `operatingMargin`, `ebitda`, `totalAssets`, `totalLiabilities`, `totalEquity`, `cashAndShortTermInvestments`, `operatingCashFlow`, `investingCashFlow`, `financingCashFlow`, `capex`, `freeCashFlow`, `dividendsPaid`, `profitMargin`, `returnOnAssets`, `revenueGrowth`, `netIncomeGrowth`
+
+**Chart** (when `includeChart` is true): `window`, `intervalSeconds`, `previousClose`, `dataPoints[]` with `timestamp`, `date`, `price`, `change`, `changePercent`, `volume`
+
+**News** (when `includeNews` is true): `title`, `source`, `url`, `timestamp`, `snippet`, `articleId`, `thumbnailUrl`, `thumbnailWidth`, `thumbnailHeight`, `relatedTickers[]`, `relatedStockQuotes[]`
+
+**Related stocks** (when `includeRelated` is true): `ticker`, `exchange`, `name`, `type`, `currency`, `price`, `change`, `changePercent`, `previousClose`, `kgMid`, `afterHours`
+
+**Market indices** (when `includeMarketIndices` is true): grouped by region (US, Europe, Asia, Currencies, Crypto, Futures) with `ticker`, `exchange`, `name`, `displayName`, `price`, `change`, `changePercent`
+
+**Market movers** (when `includeMarketMovers` is true): `ticker`, `exchange`, `name`, `price`, `change`, `changePercent`
